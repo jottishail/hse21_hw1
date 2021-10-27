@@ -7,7 +7,7 @@ cd hw1
 mkdir data
 ```
 
-1.  Выбор случайного набора чтений.
+Выбор случайного набора чтений.
 
 ```bash
 seqtk sample -s1705 assembly/oil_R1.fastq 5000000 > data/R1_sample.fastq
@@ -16,7 +16,7 @@ seqtk sample -s1705 assembly/oilMP_S4_L001_R1_001.fastq 1500000 > data/R1_MP_sam
 seqtk sample -s1705 assembly/oilMP_S4_L001_R2_001.fastq 1500000 > data/R2_MP_sample.fastq
 ```
 
-2. Оценка качества
+Оценка качества
 
 ```bash
 mkdir {fast,multi}qc
@@ -25,13 +25,13 @@ multiqc ./fastqc/ -o multiqc/
 ```
 <!-- здесь нужно вставить результаты -->
 
-3. Обрезка чтений
+Обрезка чтений
 ```bash
 platanus_trim data/R?_sample.fastq
 platanus_internal_trim data/R?_MP_sample.fastq
 rm data/*.fastq
 ```
-4. Оценка качества
+Оценка качества
 
 ```bash
 mkdir {fast,multi}qc_trimmer
@@ -41,7 +41,7 @@ multiqc ./fastqc_trimmed/ -o multiqc_trimmed/
 
 <!-- здесь нужно вставить результаты -->
 
-5. Сборка/анализ контигов и скаффолдов
+Сборка/анализ контигов и скаффолдов
 
 ```bash
 platanus assemble -f data/R?_sample.fastq.trimmed
@@ -49,26 +49,44 @@ platanus scaffold -c out_contig.fa -IP1 data/R{1,2}_sample.fastq.trimmed -OP2 da
 rm *.tsv *Bubble.fa
 ```
 
-<!--
-анализ контигов (общее кол-во контигов, их общая длина, длина самого длинного контига, N50)
+Анализ полученных последовательностей ([код](./src/hw1.ipynb)):
 
-анализ скаффолдов (общее кол-во скаффолдов, их общая длина, длина самого длинного скаффолда, N50)
--->
+```
+Stats for data/contigs.fasta
+ - Number of records: 607
+ - Total length: 3924917
+ - Longest record: 179307
+ - N50: 53980
 
-6. Уменьшение числа гэпов
+Stats for data/scaffolds_noClose.fasta
+ - Number of records: 70
+ - Total length: 3873759
+ - Longest record: 3831941
+ - N50: 3831941
+```
+
+Уменьшение числа гэпов
 
 ```bash
 platanus gap_close -c out_scaffold.fa -IP1 data/R{1,2}_sample.fastq.trimmed -OP2 data/R{1,2}_MP_sample.fastq.int_trimmed
 rm -r data/
 ```
-<!--
-До/после gap_close: Для самого длинного скаффолда посчитать количество гэпов (участков, состоящих из букв NNNN) и их общую длину
--->
 
-7. Результаты сборки
+Статистика по гэпам ([код](./src/hw1.ipynb)):
+
+```
+Gap stats for the longest scaffold
+ - Gap count: 63
+ - Total gap length: 5979
+
+Gap stats for the longest scaffold (with closed gaps)
+ - Gap count: 12
+ - Total gap length: 1312
+```
+
+Результаты сборки
 * [Контиги](./data/contigs.fasta)
 * [Скаффолды (до уменьшения гэпов)](./data/scaffolds_noClose.fasta)
 * [Скаффолды](./data/scaffolds.fasta)
-<!--
 *  [Самый длинный скаффолд](./data/longest.fasta)
--->
+*  [Самый длинный скаффолд (до уменьшения гэпов)](./data/longest_noClose.fasta)
