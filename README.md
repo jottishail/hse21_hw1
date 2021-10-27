@@ -90,3 +90,21 @@ Gap stats for the longest scaffold (with closed gaps)
 * [Скаффолды](./data/scaffolds.fasta)
 *  [Самый длинный скаффолд](./data/longest.fasta)
 *  [Самый длинный скаффолд (до уменьшения гэпов)](./data/longest_noClose.fasta)
+
+### Необязательная часть
+
+Для сборки использовался скрипт [`assemble.sh`](./src/assemble.sh)
+
+```bash
+for frac in 0.{9..1}; do
+    THREADS=2 ./assemble.sh $frac
+done
+rm -r data
+rm assemble_*.log
+```
+
+![Scaffold count](./img/scaff.svg)
+
+![Gap stats](./img/gaps.svg)
+
+Для 10% чтений результаты оказались значительно (в 3-5 раз) хуже, поэтому они не включены в графики.
